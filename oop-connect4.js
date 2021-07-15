@@ -2,10 +2,11 @@ class Game {
 	constructor(height, width) {
 		(this.height = height),
 			(this.width = width),
-			(this.currPlayer = 1),
 			(this.board = []),
 			(this.HTMLBoard = document.getElementById('board')),
-			(this.click = this.handleClick.bind(this));
+			(this.currPlayer = 1),
+			(this.keyframeObj = {});
+		this.click = this.handleClick.bind(this);
 		// https://stackoverflow.com/questions/33859113/javascript-removeeventlistener-not-working-inside-a-class
 		this.startGame();
 	}
@@ -24,6 +25,7 @@ class Game {
 		this.board = [];
 		this.HTMLBoard.innerHTML = '';
 		this.currPlayer = 1;
+		this.keyframeObj = {};
 		this.makeBoard();
 		this.makeHtmlBoard();
 	}
@@ -71,16 +73,25 @@ class Game {
 		if (y === null) {
 			return;
 		}
+
+		// keep track of number of times click event occurs at position 'x'
+		if (this.keyframeObj[x]) {
+			this.keyframeObj[x]++;
+		} else {
+			this.keyframeObj[x] = 1;
+		}
+
 		// place piece in board and add to HTML table
 		this.board[y][x] = this.currPlayer;
 		this.placeInTable(y, x);
 
-		// check for win
+		// check for win and tie
+		const spot = document.getElementById(`${y}-${x}`);
 		if (this.checkForWin()) {
 			this.removeHandleClick();
-			return this.endGame(`Player ${this.currPlayer} won!`);
+			spot.firstChild.addEventListener('animationend', this.endGame.bind(this, `Player ${this.currPlayer} won!`));
 		} else if (this.board.every((row) => row.every((cell) => cell))) {
-			return this.endGame(`Tie`);
+			spot.firstChild.addEventListener('animationend', this.endGame.bind(this, 'Tie!'));
 		} else {
 			this.currPlayer = this.currPlayer === 1 ? 2 : 1;
 		}
@@ -98,9 +109,10 @@ class Game {
 		return null;
 	}
 	placeInTable(y, x) {
+		const keyFrameNum = this.keyframeObj[x];
 		const piece = document.createElement('div');
-		piece.classList.add('piece');
-		piece.classList.add(`p${this.currPlayer}`);
+
+		piece.classList.add('piece', `p${this.currPlayer}`, `slide${keyFrameNum}`);
 		// piece.style.top = -50 * (y + 2); ???
 
 		const spot = document.getElementById(`${y}-${x}`);

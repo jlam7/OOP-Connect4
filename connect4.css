@@ -1,34 +1,121 @@
 /* game board table */
 
 #board td {
-  width: 50px;
-  height: 50px;
-  border: solid 1px #666;
+	width: 50px;
+	height: 50px;
+	border: solid 1px #666;
+	position: relative;
 }
 
 /* pieces are div within game table cells: draw as colored circles */
 
 .piece {
-  margin: 5px;
-  width: 80%;
-  height: 80%;
-  border-radius: 50%;
+	margin: 5px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
 }
 
 .piece.p1 {
-  background-color: red;
+	background-color: red;
 }
 
 .piece.p2 {
-  background-color: blue;
+	background-color: blue;
 }
 
 /* column-top is table row of clickable areas for each column */
 
 #column-top td {
-  border: dashed 1px lightgray;
+	border: dashed 1px lightgray;
 }
 
 #column-top td:hover {
-  background-color: gold;
+	background-color: gold;
+}
+
+/* animation */
+
+.slide1 {
+	position: absolute;
+	animation: slide1 1s forwards;
+}
+@keyframes slide1 {
+	from {
+		top: -350px;
+	}
+
+	to {
+		top: 0px;
+	}
+}
+
+.slide2 {
+	position: absolute;
+	animation: slide2 1s forwards;
+}
+@keyframes slide2 {
+	from {
+		top: -300px;
+	}
+
+	to {
+		top: 0px;
+	}
+}
+
+.slide3 {
+	position: absolute;
+	animation: slide3 1s forwards;
+}
+@keyframes slide3 {
+	from {
+		top: -250px;
+	}
+
+	to {
+		top: 0px;
+	}
+}
+
+.slide4 {
+	position: absolute;
+	animation: slide4 1s forwards;
+}
+@keyframes slide4 {
+	from {
+		top: -200px;
+	}
+
+	to {
+		top: 0px;
+	}
+}
+
+.slide5 {
+	position: absolute;
+	animation: slide5 1s forwards;
+}
+@keyframes slide5 {
+	from {
+		top: -150px;
+	}
+
+	to {
+		top: 0px;
+	}
+}
+
+.slide6 {
+	position: absolute;
+	animation: slide6 1s forwards;
+}
+@keyframes slide6 {
+	from {
+		top: -100px;
+	}
+
+	to {
+		top: 0px;
+	}
 }
