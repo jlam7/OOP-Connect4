@@ -28,13 +28,7 @@ class Game {
 			if (!(CSS.supports('color', this.p1.color) && CSS.supports('color', this.p2.color)))
 				return alert('Invalid color, please try again');
 
-			if (!this.board.length && this.HTMLBoard.innerHTML === '') {
-				this.makeBoard();
-				this.makeHtmlBoard();
-				this.currPlayer = this.p1;
-			} else {
-				this.resetGame();
-			}
+			this.resetGame();
 		});
 	}
 	resetGame() {
@@ -105,10 +99,8 @@ class Game {
 		const spot = document.getElementById(`${y}-${x}`).firstChild;
 		if (this.checkForWin()) {
 			this.removeHandleClick();
-			// spot.addEventListener('animationend', this.endGame.bind(this, `Player ${this.currPlayer.num} won!`));
 			spot.addEventListener('animationend', () => this.endGame(`Player ${this.currPlayer.num} won!`));
 		} else if (this.board.every((row) => row.every((cell) => cell))) {
-			// spot.addEventListener('animationend', this.endGame.bind(this, 'Tie!'));
 			spot.addEventListener('animationend', () => this.endGame('Tie!'));
 		} else {
 			this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
@@ -127,10 +119,10 @@ class Game {
 		return null;
 	}
 	placeInTable(y, x) {
-		const keyFrameNum = this.keyframeObj[x];
+		const num = this.keyframeObj[x];
 		const piece = document.createElement('div');
 
-		piece.classList.add('piece', `slide${keyFrameNum}`);
+		piece.classList.add('piece', `slide${num}`);
 		piece.style.backgroundColor = `${this.currPlayer.color}`;
 		// piece.style.top = -50 * (y + 2); ???
 
