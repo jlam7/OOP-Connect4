@@ -96,12 +96,12 @@ class Game {
 		this.placeInTable(y, x);
 
 		// check for win or tie
-		const spot = document.getElementById(`${y}-${x}`).firstChild;
+		const piece = document.getElementById(`${y}-${x}`).firstChild;
 		if (this.checkForWin()) {
 			this.removeHandleClick();
-			spot.addEventListener('animationend', () => this.endGame(`Player ${this.currPlayer.num} won!`));
+			piece.addEventListener('animationend', () => this.endGame(`Player ${this.currPlayer.num} won!`));
 		} else if (this.board.every((row) => row.every((cell) => cell))) {
-			spot.addEventListener('animationend', () => this.endGame('Tie!'));
+			piece.addEventListener('animationend', () => this.endGame('Tie!'));
 		} else {
 			this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
 		}
