@@ -23,12 +23,15 @@ class Game {
 			e.preventDefault();
 			this.p1 = new Player(document.querySelector('#P1').value, 1);
 			this.p2 = new Player(document.querySelector('#P2').value, 2);
-			this.currPlayer = this.p1;
 
 			if (!(this.p1.color && this.p2.color)) return alert('Please enter a color for Player1 or Player2');
+			if (!(CSS.supports('color', this.p1.color) && CSS.supports('color', this.p2.color)))
+				return alert('Invalid color, please try again');
+
 			if (!this.board.length && this.HTMLBoard.innerHTML === '') {
 				this.makeBoard();
 				this.makeHtmlBoard();
+				this.currPlayer = this.p1;
 			} else {
 				this.resetGame();
 			}
@@ -102,9 +105,11 @@ class Game {
 		const spot = document.getElementById(`${y}-${x}`).firstChild;
 		if (this.checkForWin()) {
 			this.removeHandleClick();
-			spot.addEventListener('animationend', this.endGame.bind(this, `Player ${this.currPlayer.num} won!`));
+			// spot.addEventListener('animationend', this.endGame.bind(this, `Player ${this.currPlayer.num} won!`));
+			spot.addEventListener('animationend', () => this.endGame(`Player ${this.currPlayer.num} won!`));
 		} else if (this.board.every((row) => row.every((cell) => cell))) {
-			spot.addEventListener('animationend', this.endGame.bind(this, 'Tie!'));
+			// spot.addEventListener('animationend', this.endGame.bind(this, 'Tie!'));
+			spot.addEventListener('animationend', () => this.endGame('Tie!'));
 		} else {
 			this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
 		}
