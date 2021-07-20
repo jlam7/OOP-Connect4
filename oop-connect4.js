@@ -1,3 +1,4 @@
+// creates a Player class
 class Player {
 	constructor(color, num) {
 		this.color = color;
@@ -5,6 +6,7 @@ class Player {
 	}
 }
 
+// creates a Game class
 class Game {
 	constructor(height, width) {
 		(this.height = height),
@@ -16,21 +18,30 @@ class Game {
 		this.click = this.handleClick.bind(this);
 		this.startGame();
 	}
+	// start game
 	startGame() {
 		const form = document.querySelector('form');
-
+		// add event listener to form
 		form.addEventListener('submit', (e) => {
+			// prevent browser from automatically refreshing
 			e.preventDefault();
+
+			// creates 2 player class
+			// the input.value will be passed into the player's color
+			// and the player's number will be hard-coded
 			this.p1 = new Player(document.querySelector('#P1').value, 1);
 			this.p2 = new Player(document.querySelector('#P2').value, 2);
 
+			// checks for no inputs and for invalid colors
 			if (!(this.p1.color && this.p2.color)) return alert('Please enter a color for Player1 or Player2');
 			if (!(CSS.supports('color', this.p1.color) && CSS.supports('color', this.p2.color)))
 				return alert('Invalid color, please try again');
 
+			// start game
 			this.resetGame();
 		});
 	}
+	// clear game and creates new html board and in-game memory board
 	resetGame() {
 		this.board = [];
 		this.HTMLBoard.innerHTML = '';
@@ -39,14 +50,17 @@ class Game {
 		this.makeBoard();
 		this.makeHtmlBoard();
 	}
+	// end game
 	endGame(msg) {
 		alert(msg);
 	}
+	// make in-game memory board
 	makeBoard() {
 		for (let y = 0; y < this.height; y++) {
 			this.board.push(Array.from({ length: this.width }));
 		}
 	}
+	// make html board
 	makeHtmlBoard() {
 		// make column tops (clickable area for adding a piece to that column)
 		const top = document.createElement('tr');
@@ -74,6 +88,7 @@ class Game {
 			this.HTMLBoard.append(row);
 		}
 	}
+	// handle click event
 	handleClick(evt) {
 		// get x from ID of clicked cell
 		const x = +evt.target.id;
@@ -99,17 +114,22 @@ class Game {
 		const piece = document.getElementById(`${y}-${x}`).firstChild;
 		if (this.checkForWin()) {
 			this.removeHandleClick();
+
+			// will display alert message after the animation ends
 			piece.addEventListener('animationend', () => this.endGame(`Player ${this.currPlayer.num} won!`));
 		} else if (this.board.every((row) => row.every((cell) => cell))) {
+			// will display alert message after the animation ends
 			piece.addEventListener('animationend', () => this.endGame('Tie!'));
 		} else {
 			this.currPlayer = this.currPlayer === this.p1 ? this.p2 : this.p1;
 		}
 	}
+	// remove click event
 	removeHandleClick() {
 		const topRow = document.querySelector('#column-top');
 		topRow.removeEventListener('click', this.click, false);
 	}
+	// find an empty cell and returns the y position of that cell
 	findSpotForCol(x) {
 		for (let y = this.height - 1; y >= 0; y--) {
 			if (!this.board[y][x]) {
@@ -118,17 +138,24 @@ class Game {
 		}
 		return null;
 	}
+	// create a piece and put in table
 	placeInTable(y, x) {
+		// looks up the number of times a click event occurred at position x
+		// the number should range from 1-6 clicks
+		// each number will correspond to a unique CSS keyFrame
 		const num = this.keyframeObj[x];
-		const piece = document.createElement('div');
 
+		// add class, animation, and background color
+		const piece = document.createElement('div');
 		piece.classList.add('piece', `slide${num}`);
 		piece.style.backgroundColor = `${this.currPlayer.color}`;
 		// piece.style.top = -50 * (y + 2); ???
 
+		// append the piece to the cell
 		const spot = document.getElementById(`${y}-${x}`);
 		spot.append(piece);
 	}
+	// check for win
 	checkForWin() {
 		const _win = (cells) => {
 			// Check four cells to see if they're all color of current player
