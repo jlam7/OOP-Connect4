@@ -143,13 +143,15 @@ class Game {
 	}
 	// create a piece and put in table
 	placeInTable(y, x) {
-		// from the x position, the num of clicks will give you the rowNum
-		const rowNum = this.keyframeObj[x];
-		// does not include the lowest row when calculating totalPixel
-		// each row is 50px in height
-		const totalPixel = (rowNum - 1) * 50;
-		// lowest row is included in the starting height position
-		// animationHeight starts off as a negative number and will become smaller by adding totalPixel
+		// from the x position, get the num of clicks
+		const numClicks = this.keyframeObj[x];
+		// each row * row height (which is 50px)
+		// does not include the first click:
+		//   -as animationHeight already factored in the the column top or the clickable area for adding a piece
+		const totalPixel = (numClicks - 1) * 50;
+		// animationHeight calculated by the (game height + column top) * row height (which is 50px)
+		// to prevent the piece being added to the clickable area from moving out of bounds:
+		//   -have animationHeight decrease by amount of pixel in totalPixel
 		this.animationHeight = (this.height + 1) * -50 + totalPixel;
 
 		// add class, animation, and background color
@@ -157,9 +159,10 @@ class Game {
 		piece.classList.add('piece');
 		piece.style.backgroundColor = `${this.currPlayer.color}`;
 
-		// will make a number of different slide (which should be the same count as the game height)
-		this.dynamicAnimation(`slide${rowNum}`, this.animationHeight);
-		piece.style.animation = `slide${rowNum} 1s forwards`;
+		// will make the same # of slides as the # of rows in game height:
+		//   -(ex: this.height = 8, then there will be 8 different slides)
+		this.dynamicAnimation(`slide${numClicks}`, this.animationHeight);
+		piece.style.animation = `slide${numClicks} 1s forwards`;
 		// piece.style.top = -50 * (y + 2); ???
 
 		// append the piece to the cell
