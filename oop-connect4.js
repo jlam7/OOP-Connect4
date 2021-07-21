@@ -14,6 +14,8 @@ class Game {
 			(this.board = []),
 			(this.HTMLBoard = document.getElementById('board')),
 			(this.currPlayer = undefined);
+		this.styleSheets = null;
+		this.animationHeight = 0;
 		this.keyframeObj = {};
 		this.click = this.handleClick.bind(this);
 		this.startGame();
@@ -140,20 +142,49 @@ class Game {
 	}
 	// create a piece and put in table
 	placeInTable(y, x) {
-		// looks up the number of times a click event occurred at position x
-		// the number should range from 1-6 clicks
-		// each number will correspond to a unique CSS keyFrame
-		const num = this.keyframeObj[x];
+		// from the x position, the num of clicks will give you the rowNum
+		const rowNum = this.keyframeObj[x];
+		// does not include the lowest row when calculating totalPixel
+		// each row is 50px in height
+		const totalPixel = (rowNum - 1) * 50;
+		// lowest row is included in the starting height position
+		// animationHeight starts off as a negative number and will become smaller by adding totalPixel
+		this.animationHeight = (this.height + 1) * -50 + totalPixel;
 
 		// add class, animation, and background color
 		const piece = document.createElement('div');
-		piece.classList.add('piece', `slide${num}`);
+		piece.classList.add('piece');
 		piece.style.backgroundColor = `${this.currPlayer.color}`;
+
+		// will make a number of different slide (which should be the same count as the game height)
+		this.dynamicAnimation(`slide${rowNum}`, this.animationHeight);
+		piece.style.animation = `slide${rowNum} 1s forwards`;
 		// piece.style.top = -50 * (y + 2); ???
 
 		// append the piece to the cell
 		const spot = document.getElementById(`${y}-${x}`);
 		spot.append(piece);
+	}
+	// dynamic animation
+	dynamicAnimation(name, animationHeight) {
+		// add css styleSheet
+		if (!this.styleSheets) {
+			this.styleSheets = document.createElement('style');
+			this.styleSheets.type = 'text/css';
+			document.head.appendChild(this.styleSheets);
+		}
+		// add keyframes
+		this.styleSheets.sheet.insertRule(
+			`@keyframes ${name} {
+			from {
+				top : ${animationHeight}px;
+			}
+			to {
+				top : 0px;
+			}
+		}`,
+			this.styleSheets.length
+		);
 	}
 	// check for win
 	checkForWin() {
@@ -186,4 +217,4 @@ class Game {
 	}
 }
 
-new Game(6, 7);
+new Game(8, 9);
