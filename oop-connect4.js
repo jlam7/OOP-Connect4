@@ -34,8 +34,9 @@ class Game {
 			this.p1 = new Player(document.querySelector('#P1').value, 1);
 			this.p2 = new Player(document.querySelector('#P2').value, 2);
 
-			// checks for no inputs and for invalid colors
+			// checks for no inputs, similar colors, and for invalid colors
 			if (!(this.p1.color && this.p2.color)) return alert('Please enter a color for Player1 or Player2');
+			if (this.p1.color === this.p2.color) return alert('Please choose different colors');
 			if (!(CSS.supports('color', this.p1.color) && CSS.supports('color', this.p2.color)))
 				return alert('Invalid color, please try again');
 
